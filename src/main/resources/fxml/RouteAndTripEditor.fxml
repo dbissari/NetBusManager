@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.gl52.netbusmanager.controller.RouteAndTripEditorController">
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="25.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" onAction="#goBackToMainScreen" text="Menu principal" />
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="450.0" spacing="15.0">
+                    <children>
+                        <Label text="Ligne (*) :" />
+                        <ComboBox fx:id="routeComboBox" prefWidth="200.0" />
+                        <Button mnemonicParsing="false" onAction="#addNewRoute" text="Ajouter une ligne" />
+                    </children>
+                </HBox>
+            </children>
+            <BorderPane.margin>
+                <Insets left="30.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="editorInformationLabel" style="-fx-text-fill: red;" wrapText="true" />
+                <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <Label text="Direction (*) :" wrapText="true" />
+                        <TextField fx:id="directionTextField" prefWidth="150.0" />
+                        <Label prefWidth="60.0" text="Début de service :" wrapText="true">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="startTimeTextField" prefWidth="100.0" />
+                        <Label prefWidth="60.0" text="Fin de service :" wrapText="true">
+                            <HBox.margin>
+                                <Insets left="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="endTimeTextField" prefWidth="100.0" />
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="430.0" prefWidth="200.0">
+                    <children>
+                        <ListView fx:id="allStopsListView" prefHeight="200.0" prefWidth="250.0" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0">
+                            <children>
+                                <Button mnemonicParsing="false" onAction="#addSelectedStop" text="Ajouter &gt;" />
+                                <Button mnemonicParsing="false" onAction="#removeSelectedStop" text="&lt; Retirer" />
+                            </children>
+                        </VBox>
+                        <ListView fx:id="addedStopsListView" prefHeight="200.0" prefWidth="250.0" />
+                    </children>
+                </HBox>
+            </children>
+            <BorderPane.margin>
+                <Insets left="15.0" right="15.0" />
+            </BorderPane.margin>
+        </VBox>
+    </center>
+    <right>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" BorderPane.alignment="CENTER">
+            <children>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Couleur (*)" />
+                  <ColorPicker fx:id="tripColorPicker" />
+               </children>
+            </VBox>
+                <Button mnemonicParsing="false" onAction="#submitTrip" text="Créer l'itinéraire" textAlignment="CENTER" wrapText="true" />
+                <Button fx:id="existingLinesButton" mnemonicParsing="false" onAction="#existingLinesShow" text="Voir les itinéraires existants" textAlignment="CENTER" wrapText="true" />
+            </children>
+            <BorderPane.margin>
+                <Insets right="30.0" />
+            </BorderPane.margin>
+        </VBox>
+    </right>
+    <bottom>
+        <Label text="Les champs portant le signe (*) sont obligatoires. Pour créer un itinéraire prendre au moins deux (2) arrêts" BorderPane.alignment="CENTER" />
+    </bottom>
+</BorderPane>

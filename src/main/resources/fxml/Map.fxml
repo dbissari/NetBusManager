@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import com.sothawo.mapjfx.MapView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.stage.Screen?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="${screen.visualBounds.height-40}" prefWidth="${screen.visualBounds.width}" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.gl52.netbusmanager.controller.MapController" >
+    <fx:define>
+        <Screen fx:factory="getPrimary" fx:id="screen"/>
+    </fx:define>
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="25.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" onAction="#goBackToMainScreen" text="Menu principal" />
+            </children>
+            <BorderPane.margin>
+                <Insets left="30.0" />
+            </BorderPane.margin>
+        </HBox>
+    </top>
+    <left>
+        <ListView fx:id="tripListView" prefHeight="450.0" prefWidth="250.0" />
+    </left>
+    <center>
+        <MapView fx:id="mapView" />
+    </center>
+    <right>
+        <TreeView fx:id="stopTimeTreeView" prefHeight="450.0" prefWidth="250.0" />
+    </right>
+    <bottom>
+        <HBox alignment="CENTER" spacing="100.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Cliquez sur un arrêt pour voir les heures de passage des bus" />
+                <Label fx:id="mapInfosLabel" />
+            </children>
+            <BorderPane.margin>
+                <Insets left="30.0" />
+            </BorderPane.margin>
+        </HBox>
+    </bottom>
+</BorderPane>
