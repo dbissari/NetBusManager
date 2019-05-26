@@ -35,7 +35,9 @@ public class MainApp extends Application {
      */
     public static void switchScene(String fileName) throws IOException {
         Parent root = FXMLLoader.load(MainApp.class.getResource("/fxml/" + fileName + ".fxml"));
-        MainApp.stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("/css/style.css");
+        MainApp.stage.setScene(scene);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class StopTimeDao extends AbstractDao<StopTime> {
      * @return all saved stop time for the directedRoute
      */
     public List<StopTime> getAllByTrip(Trip trip) {
-        Query q = entityManager.createQuery("select st from StopTime st where st.trip = :trip");
+        Query q = entityManager.createQuery("select st from StopTime st where st.trip = :trip order by st.stopSequence asc");
         q.setParameter("trip", trip);
 
         return q.getResultList();
