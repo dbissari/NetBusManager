@@ -19,8 +19,13 @@ public class MainMenuController {
     }
     
     @FXML
-    private void lineEditorShow(ActionEvent event) throws IOException {
-        MainApp.switchScene(FxmlResource.LINE_EDITOR.getFileName());
+    private void routeEditorShow(ActionEvent event) throws IOException {
+        MainApp.switchScene(FxmlResource.ROUTE_EDITOR.getFileName());
+    }
+    
+    @FXML
+    private void tripEditorShow(ActionEvent event) throws IOException {
+        MainApp.switchScene(FxmlResource.TRIP_EDITOR.getFileName());
     }
     
     @FXML

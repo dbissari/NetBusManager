@@ -13,10 +13,11 @@ public enum FxmlResource {
     
     MAIN_MENU("MainMenu"),
     STOP_EDITOR("StopEditor"),
-    LINE_EDITOR("RouteAndTripEditor"),
-    LINE_LIST("TripList"),
+    TRIP_EDITOR("TripEditor"),
+    TRIP_LIST("TripList"),
     MAP("Map"),
-    SCHEDULE_EDITOR("ScheduleEditor");
+    SCHEDULE_EDITOR("ScheduleEditor"),
+    ROUTE_EDITOR("RouteEditor");
     
     private final String fileName;
     

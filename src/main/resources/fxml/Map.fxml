@@ -3,9 +3,11 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import com.sothawo.mapjfx.MapView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TreeView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.geometry.Insets?>
 <?import javafx.stage.Screen?>
@@ -19,6 +21,29 @@
         <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="25.0" BorderPane.alignment="CENTER">
             <children>
                 <Button mnemonicParsing="false" onAction="#goBackToMainScreen" text="Menu principal" />
+                <VBox fx:id="createStopForm" spacing="5.0" alignment="CENTER_LEFT" visible="false">
+                    <children>
+                        <Label fx:id="editorInformationLabel" style="-fx-text-fill: red;" wrapText="true">
+                            <VBox.margin>
+                                <Insets left="150.0" />
+                            </VBox.margin>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                            <children>
+                                <Label text="Nom (*):" />
+                                <TextField fx:id="stopNameTextField" />
+                                <Label text="Latitude (*):" />
+                                <TextField fx:id="stopLatitudeTextField" disable="true" />
+                                <Label text="Longitude (*):" />
+                                <TextField fx:id="stopLongitudeTextField" disable="true" />
+                                <Button mnemonicParsing="false" onAction="#saveStop" text="Valider" />
+                            </children>
+                            <VBox.margin>
+                                <Insets left="150.0" />
+                            </VBox.margin>
+                        </HBox>
+                    </children>
+                </VBox>
             </children>
             <BorderPane.margin>
                 <Insets left="30.0" />

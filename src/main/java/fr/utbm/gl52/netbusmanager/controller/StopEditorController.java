@@ -133,10 +133,11 @@ public class StopEditorController implements Initializable {
         if (violations.isEmpty()) {
             if (this.stopToEdit == null) {
                 this.stopDao.save(newStop);
-            } else {
+            }
+            else {
                 newStop.setId(this.stopToEdit.getId());
-                this.stopToEdit = null;
                 this.stopDao.update(newStop);
+                this.stopToEdit = null;
             }
 
             this.addStopButton.fire();
@@ -152,8 +153,8 @@ public class StopEditorController implements Initializable {
 
     @FXML
     public void editSelectedStop(ActionEvent e) {
-        stopToEdit = (Stop) this.dataTableView.getSelectionModel().getSelectedItem();
-        if (stopToEdit != null) {
+        this.stopToEdit = (Stop) this.dataTableView.getSelectionModel().getSelectedItem();
+        if (this.stopToEdit != null) {
             this.addStopButton.fire();
         }
     }

@@ -89,8 +89,8 @@ public class TripListController implements Initializable {
     }
 
     @FXML
-    public void goToLineEditor() throws IOException {
-        MainApp.switchScene(FxmlResource.LINE_EDITOR.getFileName());
+    public void goToTripEditorScreen() throws IOException {
+        MainApp.switchScene(FxmlResource.TRIP_EDITOR.getFileName());
     }
 
 }

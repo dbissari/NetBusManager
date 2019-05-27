@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<SplitPane fx:id="root" dividerPositions="0.29797979797979796" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.utbm.gl52.netbusmanager.controller.RouteEditorController">
+    <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <children>
+                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="15.0">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#goToTripEditorScreen" text="Ajouter un itinéraire" />
+                        <Button mnemonicParsing="false" onAction="#goToTripListScreen" text="Consulter les itinéraires" />
+                        <Button mnemonicParsing="false" onAction="#goBackToMainScreen" text="Menu principal" />
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200" prefWidth="200">
+            <children>
+                <Label text="Les champs portant le signe (*) sont obligatoires" />
+                <HBox prefHeight="580.0" prefWidth="540.0" spacing="15.0">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="200.0" spacing="15.0">
+                            <children>
+                                <Label fx:id="editorInformationLabel" style="-fx-text-fill: red;" wrapText="true" />
+                                <VBox prefWidth="200.0" spacing="2.0">
+                                    <children>
+                                        <Label text="Identifiant (*)" />
+                                        <TextField fx:id="identifierTextField" maxWidth="165.0" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="2.0">
+                                    <children>
+                                        <Label text="Couleur (*)" />
+                                        <ColorPicker fx:id="routeColorPicker" />
+                                    </children>
+                                </VBox>
+                                <Button mnemonicParsing="false" onAction="#saveRoute" text="Valider">
+                                    <VBox.margin>
+                                        <Insets left="100.0" />
+                                    </VBox.margin>
+                                </Button>
+                            </children>
+                            <HBox.margin>
+                                <Insets left="30.0" top="30.0" />
+                            </HBox.margin>
+                        </VBox>
+                        <ListView fx:id="routesListView" prefHeight="200.0" prefWidth="200.0">
+                            <HBox.margin>
+                                <Insets top="30.0" />
+                            </HBox.margin>
+                        </ListView>
+                        <Button mnemonicParsing="false" onAction="#editSelectedRoute" text="Modifier">
+                     <HBox.margin>
+                        <Insets top="30.0" />
+                     </HBox.margin></Button>
+                    </children>
+                </HBox>
+            </children>
+        </AnchorPane>
+    </items>
+</SplitPane>

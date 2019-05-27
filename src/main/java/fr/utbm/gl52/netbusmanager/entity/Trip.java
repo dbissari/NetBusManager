@@ -41,10 +41,6 @@ public class Trip implements Serializable {
     @NotBlank(message = "La direction ne peut être vide")
     private String direction;
 
-    @Column(nullable = false)
-    @NotBlank(message = "La couleur ne peut être vide")
-    private String color;
-
     @Column(nullable = true)
     @Temporal(TemporalType.TIME)
     private Date startTime;
@@ -62,14 +58,12 @@ public class Trip implements Serializable {
      * @param direction the direction
      * @param startTime the start time
      * @param endTime the end time
-     * @param color the color
      */
-    public Trip(Route route, String direction, Date startTime, Date endTime, String color) {
+    public Trip(Route route, String direction, Date startTime, Date endTime) {
         this.route = route;
         this.direction = direction;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.color = color;
     }
 
     /**
@@ -140,20 +134,6 @@ public class Trip implements Serializable {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
-    }
-
-    /**
-     * @return the color
-     */
-    public String getColor() {
-        return this.color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color) {
-        this.color = color;
     }
 
     @Override

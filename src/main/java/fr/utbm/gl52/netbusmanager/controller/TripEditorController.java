@@ -41,7 +41,7 @@ import javax.validation.ConstraintViolation;
  *
  * @author bright
  */
-public class RouteAndTripEditorController implements Initializable {
+public class TripEditorController implements Initializable {
     
     private final RouteDao routeDao = MainApp.getRouteDao();
     private final TripDao tripDao = MainApp.getTripDao();
@@ -87,36 +87,13 @@ public class RouteAndTripEditorController implements Initializable {
     }
     
     @FXML
-    public void existingLinesShow() throws IOException {
-        MainApp.switchScene(FxmlResource.LINE_LIST.getFileName());
+    public void goToTripListScreen() throws IOException {
+        MainApp.switchScene(FxmlResource.TRIP_LIST.getFileName());
     }
     
     @FXML
-    public void addNewRoute(ActionEvent e) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Ajout d'une ligne");
-        dialog.setHeaderText(dialog.getTitle());
-        dialog.setContentText("Identifiant/Description :");
-        Optional<String> result = dialog.showAndWait();
-        
-        this.editorInformationLabel.setVisible(false);
-        this.editorInformationLabel.setText("");
-        
-        if (result.isPresent()){
-            Route newRoute = new Route(result.get());
-            
-            Set<ConstraintViolation<Route>> violations = ValidatorUtil.getValidator().validate(newRoute);
-            if (violations.isEmpty()) {
-                this.routeDao.save(newRoute);
-                this.routeComboBox.setItems(FXCollections.observableArrayList(this.routeDao.getAll()));
-            } 
-            else {
-                violations.forEach(violation -> {
-                    this.editorInformationLabel.setText(this.editorInformationLabel.getText() + " | " + violation.getMessage());
-                });
-                this.editorInformationLabel.setVisible(true);
-            }
-        }
+    public void goToRouteEditorScreen(ActionEvent e) throws IOException {
+        MainApp.switchScene(FxmlResource.ROUTE_EDITOR.getFileName());
     }
     
     @FXML
@@ -146,7 +123,7 @@ public class RouteAndTripEditorController implements Initializable {
             null : Trip.TIME_FORMAT.parse(this.startTimeTextField.getText());
         Date endTime = this.endTimeTextField.getText() == null || this.endTimeTextField.getText().isEmpty() ?
             null : Trip.TIME_FORMAT.parse(this.endTimeTextField.getText());
-        Trip newTrip = new Trip((Route) this.routeComboBox.getSelectionModel().getSelectedItem(), this.directionTextField.getText(), startTime, endTime, this.tripColorPicker.getValue().toString());
+        Trip newTrip = new Trip((Route) this.routeComboBox.getSelectionModel().getSelectedItem(), this.directionTextField.getText(), startTime, endTime);
         
         Set<ConstraintViolation<Trip>> violations = ValidatorUtil.getValidator().validate(newTrip);
         if (violations.isEmpty() && this.addedStopsListView.getItems().size() >= 2) {
