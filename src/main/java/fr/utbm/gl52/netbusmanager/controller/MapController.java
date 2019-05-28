@@ -27,6 +27,9 @@ import fr.utbm.gl52.netbusmanager.dao.TripDao;
 import fr.utbm.gl52.netbusmanager.entity.Stop;
 import fr.utbm.gl52.netbusmanager.entity.StopTime;
 import fr.utbm.gl52.netbusmanager.entity.Trip;
+import fr.utbm.gl52.netbusmanager.simulator.Bus;
+import fr.utbm.gl52.netbusmanager.simulator.Simulator;
+import fr.utbm.gl52.netbusmanager.util.CoordinatesUtil;
 import fr.utbm.gl52.netbusmanager.util.ValidatorUtil;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -50,6 +53,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javax.validation.ConstraintViolation;
+import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * FXML Controller class
@@ -66,6 +70,9 @@ public class MapController implements Initializable {
 
     private final HashMap<Marker, Stop> stopMarkers = new HashMap<>();
     private final List<CoordinateLine> tripLines = new ArrayList<>();
+    private final List<Marker> busMarkers = new ArrayList<>();
+    
+    private final Simulator simulator = new Simulator();
 
     private static final XYZParam xyzParam = new XYZParam()
             .withUrl("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png")
@@ -123,9 +130,47 @@ public class MapController implements Initializable {
                 // Add trip lines
                 trips.forEach(trip -> {
                     List<Coordinate> lineCoordinates = new ArrayList<>();
+                    
+                    // The list of points where the bus will stop with frame refresh
+                    List<Coordinate> busTrip = new ArrayList<>();
+                    
+                    // All the stop times of the trip
+                    List<StopTime> stopTimes = this.stopTimeDao.getAllByTrip(trip);
+                    
+                    for(int i = 0; i < stopTimes.size(); i++) {
+                        StopTime currentStopTime = stopTimes.get(i);
+                        Stop currentStop = currentStopTime.getStop();
+                        lineCoordinates.add(new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()));
+                        // If there's a next stop add steps to it
+                        if (i < stopTimes.size()-1) {
+                            StopTime nextStopTime = stopTimes.get(i+1);
+                            // Number of minutes to next stop is computed and used to generate steps for the bus
+                            Integer nbMinutes = 2;
+                            if (currentStopTime.getFirstStopTime() != null && nextStopTime.getFirstStopTime() != null) {
+                                nbMinutes = (int)Math.abs(((nextStopTime.getFirstStopTime().getTime() - currentStopTime.getFirstStopTime().getTime())/DateUtils.MILLIS_PER_MINUTE));
+                            }
+                            Stop nextStop = nextStopTime.getStop();
+                            busTrip.addAll(
+                                    CoordinatesUtil.splitLine(
+                                            new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()), 
+                                            new Coordinate(nextStop.getLatitude(), nextStop.getLongitude()), 
+                                            nbMinutes * Simulator.FRAME_REFRESH_SCALE / Simulator.FRAME_REFRESH_SECONDS
+                                    )
+                            );
+                        }
+                    }
+                    
+                    Bus bus = new Bus(busTrip);
+                    this.simulator.addBus(bus);
+                    Marker busMarker = new Marker(getClass().getResource("/img/bus-red-circle.png"), -25, -25).setPosition(bus.coordinateProperty().getValue()).setVisible(true);
+                    busMarker.positionProperty().bind(bus.coordinateProperty());
+                    this.mapView.addMarker(busMarker);
+                    this.busMarkers.add(busMarker);
+                    /*
                     this.stopTimeDao.getAllStopsByTrip(trip).forEach(stop -> {
                         lineCoordinates.add(new Coordinate(stop.getLatitude(), stop.getLongitude()));
                     });
+                    */
                     CoordinateLine line = new CoordinateLine(lineCoordinates)
                             .setVisible(true)
                             .setColor(Color.valueOf(trip.getRoute().getColor()))
@@ -183,13 +228,14 @@ public class MapController implements Initializable {
         this.initOfflineCache();
         this.mapView.initialize();
 
+        this.simulator.run();
     }
 
     @FXML
     public void saveStop() {
         this.editorInformationLabel.setVisible(false);
         this.editorInformationLabel.setText("");
-        
+
         if (this.stopToCreate != null) {
             this.stopToCreate.setName(this.stopNameTextField.getText());
             Set<ConstraintViolation<Stop>> violations = ValidatorUtil.getValidator().validate(this.stopToCreate);
@@ -218,7 +264,7 @@ public class MapController implements Initializable {
         marker.attachLabel(label);
         this.mapView.addMarker(marker).addLabel(label);
         this.stopMarkers.put(marker, stop);
-        
+
         return coordinate;
     }
 
