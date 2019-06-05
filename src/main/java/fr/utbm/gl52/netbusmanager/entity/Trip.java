@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -49,6 +50,11 @@ public class Trip implements Serializable {
     @Temporal(TemporalType.TIME)
     private Date endTime;
 
+    @Column(nullable = true)
+    @Min(value = 1, message = "La fréquence doit être supérieur à 0")
+    @NotNull(message = "La fréquence doit être renseignée")
+    private Integer frequency;
+
     public Trip() {
 
     }
@@ -58,12 +64,14 @@ public class Trip implements Serializable {
      * @param direction the direction
      * @param startTime the start time
      * @param endTime the end time
+     * @param frequency the frequency
      */
-    public Trip(Route route, String direction, Date startTime, Date endTime) {
+    public Trip(Route route, String direction, Date startTime, Date endTime, Integer frequency) {
         this.route = route;
         this.direction = direction;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.frequency = frequency;
     }
 
     /**
@@ -134,6 +142,20 @@ public class Trip implements Serializable {
      */
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    /**
+     * @return the frequency
+     */
+    public Integer getFrequency() {
+        return this.frequency;
+    }
+
+    /**
+     * @param frequency the frequency to set
+     */
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
     }
 
     @Override

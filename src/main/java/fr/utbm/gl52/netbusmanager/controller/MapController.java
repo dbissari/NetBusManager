@@ -53,7 +53,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javax.validation.ConstraintViolation;
-import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * FXML Controller class
@@ -71,7 +70,7 @@ public class MapController implements Initializable {
     private final HashMap<Marker, Stop> stopMarkers = new HashMap<>();
     private final List<CoordinateLine> tripLines = new ArrayList<>();
     private final List<Marker> busMarkers = new ArrayList<>();
-    
+
     private final Simulator simulator = new Simulator();
 
     private static final XYZParam xyzParam = new XYZParam()
@@ -130,47 +129,56 @@ public class MapController implements Initializable {
                 // Add trip lines
                 trips.forEach(trip -> {
                     List<Coordinate> lineCoordinates = new ArrayList<>();
-                    
+
                     // The list of points where the bus will stop with frame refresh
                     List<Coordinate> busTrip = new ArrayList<>();
-                    
+
                     // All the stop times of the trip
                     List<StopTime> stopTimes = this.stopTimeDao.getAllByTrip(trip);
-                    
-                    for(int i = 0; i < stopTimes.size(); i++) {
+
+                    for (int i = 0; i < stopTimes.size(); i++) {
                         StopTime currentStopTime = stopTimes.get(i);
                         Stop currentStop = currentStopTime.getStop();
                         lineCoordinates.add(new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()));
                         // If there's a next stop add steps to it
-                        if (i < stopTimes.size()-1) {
-                            StopTime nextStopTime = stopTimes.get(i+1);
+                        if (i < stopTimes.size() - 1) {
+                            StopTime nextStopTime = stopTimes.get(i + 1);
                             // Number of minutes to next stop is computed and used to generate steps for the bus
                             Integer nbMinutes = 2;
-                            if (currentStopTime.getFirstStopTime() != null && nextStopTime.getFirstStopTime() != null) {
-                                nbMinutes = (int)Math.abs(((nextStopTime.getFirstStopTime().getTime() - currentStopTime.getFirstStopTime().getTime())/DateUtils.MILLIS_PER_MINUTE));
+                            // TODO : Compute nbMinutes with distance when there's no firstStopTime
+                            if (nextStopTime.getTimeFromFirstStop() != null) {
+                                nbMinutes = Math.abs(nextStopTime.getTimeFromFirstStop() - currentStopTime.getTimeFromFirstStop());
                             }
                             Stop nextStop = nextStopTime.getStop();
                             busTrip.addAll(
                                     CoordinatesUtil.splitLine(
-                                            new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()), 
-                                            new Coordinate(nextStop.getLatitude(), nextStop.getLongitude()), 
-                                            nbMinutes * Simulator.FRAME_REFRESH_SCALE / Simulator.FRAME_REFRESH_SECONDS
+                                            new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()),
+                                            new Coordinate(nextStop.getLatitude(), nextStop.getLongitude()),
+                                            Simulator.getStepsCountFromMinutes(nbMinutes)
                                     )
                             );
                         }
                     }
                     
-                    Bus bus = new Bus(busTrip);
-                    this.simulator.addBus(bus);
-                    Marker busMarker = new Marker(getClass().getResource("/img/bus-red-circle.png"), -25, -25).setPosition(bus.coordinateProperty().getValue()).setVisible(true);
-                    busMarker.positionProperty().bind(bus.coordinateProperty());
-                    this.mapView.addMarker(busMarker);
-                    this.busMarkers.add(busMarker);
-                    /*
-                    this.stopTimeDao.getAllStopsByTrip(trip).forEach(stop -> {
-                        lineCoordinates.add(new Coordinate(stop.getLatitude(), stop.getLongitude()));
-                    });
-                    */
+                    try {
+                        // Create buses based on trip frequency
+                        int busCount = stopTimes.get(0).getDayStopTimes().size();
+                        for (int i = 0; i < busCount; i++) {
+                            Bus bus = new Bus(busTrip, Simulator.getStepsCountFromMinutes(i * trip.getFrequency()));
+                            this.simulator.addBus(bus);
+                            Marker busMarker = new Marker(getClass()
+                                    .getResource("/img/bus-red-circle.png"), -25, -25)
+                                    .setPosition(bus.coordinateProperty().getValue())
+                                    .setVisible(bus.visibleProperty().getValue());
+                            busMarker.positionProperty().bind(bus.coordinateProperty());
+                            busMarker.visibleProperty().bind(bus.visibleProperty());
+                            this.mapView.addMarker(busMarker);
+                            this.busMarkers.add(busMarker);
+                        }
+                    } catch (ParseException ex) {
+                        System.err.println(ex);
+                    }
+
                     CoordinateLine line = new CoordinateLine(lineCoordinates)
                             .setVisible(true)
                             .setColor(Color.valueOf(trip.getRoute().getColor()))

@@ -40,20 +40,8 @@
                     <children>
                         <VBox spacing="5.0">
                             <children>
-                                <Label text="Heure premier passage (*)" wrapText="true" />
-                                <TextField fx:id="firstStopTimeTextField" />
-                            </children>
-                        </VBox>
-                        <VBox spacing="5.0">
-                            <children>
-                                <Label text="Temps d'arrêt (*)" wrapText="true" />
-                                <TextField fx:id="stopTimeTextField" />
-                            </children>
-                        </VBox>
-                        <VBox spacing="5.0">
-                            <children>
-                                <Label text="Intervalle entre passages (*)" wrapText="true" />
-                                <TextField fx:id="stopIntervalTextField" />
+                                <Label text="Temps depuis le premier arrêt (*)" wrapText="true" />
+                                <TextField fx:id="timeFromFirstStopTextField" />
                             </children>
                         </VBox>
                     </children>

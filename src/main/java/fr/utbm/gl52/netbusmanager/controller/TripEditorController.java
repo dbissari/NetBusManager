@@ -66,6 +66,8 @@ public class TripEditorController implements Initializable {
     private Button existingLinesButton;
     @FXML
     private ColorPicker tripColorPicker;
+    @FXML
+    private TextField frequencyTextField;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -123,7 +125,8 @@ public class TripEditorController implements Initializable {
             null : Trip.TIME_FORMAT.parse(this.startTimeTextField.getText());
         Date endTime = this.endTimeTextField.getText() == null || this.endTimeTextField.getText().isEmpty() ?
             null : Trip.TIME_FORMAT.parse(this.endTimeTextField.getText());
-        Trip newTrip = new Trip((Route) this.routeComboBox.getSelectionModel().getSelectedItem(), this.directionTextField.getText(), startTime, endTime);
+        Integer frequency = this.frequencyTextField.getText().isEmpty() ? null : Integer.parseInt(this.frequencyTextField.getText());
+        Trip newTrip = new Trip((Route) this.routeComboBox.getSelectionModel().getSelectedItem(), this.directionTextField.getText(), startTime, endTime, frequency);
         
         Set<ConstraintViolation<Trip>> violations = ValidatorUtil.getValidator().validate(newTrip);
         if (violations.isEmpty() && this.addedStopsListView.getItems().size() >= 2) {

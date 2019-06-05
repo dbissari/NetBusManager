@@ -72,6 +72,12 @@
     <right>
         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" BorderPane.alignment="CENTER">
             <children>
+                <VBox spacing="5.0">
+                    <children>
+                        <Label text="Fréquence des bus (*)" wrapText="true" />
+                        <TextField fx:id="frequencyTextField" />
+                    </children>
+                </VBox>
                 <Button mnemonicParsing="false" onAction="#submitTrip" text="Créer l'itinéraire" textAlignment="CENTER" wrapText="true" />
                 <Button fx:id="existingLinesButton" mnemonicParsing="false" onAction="#goToTripListScreen" text="Voir les itinéraires existants" textAlignment="CENTER" wrapText="true" />
             </children>

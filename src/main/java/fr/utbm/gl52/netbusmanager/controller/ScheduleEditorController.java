@@ -43,11 +43,7 @@ public class ScheduleEditorController implements Initializable {
     @FXML
     private ListView stopListView;
     @FXML
-    private TextField firstStopTimeTextField;
-    @FXML 
-    private TextField stopTimeTextField;
-    @FXML
-    private TextField stopIntervalTextField;
+    private TextField timeFromFirstStopTextField;
     @FXML
     private Label editorInformationLabel;
 
@@ -73,14 +69,10 @@ public class ScheduleEditorController implements Initializable {
     
     private void updateEditorFields() {
         if (this.stopTimeToEdit != null) {
-            this.firstStopTimeTextField.setText(this.stopTimeToEdit.getFirstStopTime() == null ? "" : StopTime.TIME_FORMAT.format(this.stopTimeToEdit.getFirstStopTime()));
-            this.stopTimeTextField.setText(this.stopTimeToEdit.getStopTime() == null ? "" : this.stopTimeToEdit.getStopTime().toString());
-            this.stopIntervalTextField.setText(this.stopTimeToEdit.getStopInterval() == null ? "" : this.stopTimeToEdit.getStopInterval().toString());
+            this.timeFromFirstStopTextField.setText(this.stopTimeToEdit.getTimeFromFirstStop() == null ? "" : this.stopTimeToEdit.getTimeFromFirstStop().toString());
         }
         else {
-            this.firstStopTimeTextField.clear();
-            this.stopTimeTextField.clear();
-            this.stopIntervalTextField.clear();
+            this.timeFromFirstStopTextField.clear();
         }
     }
     
@@ -90,13 +82,8 @@ public class ScheduleEditorController implements Initializable {
         this.editorInformationLabel.setText("");
         
         if (this.stopTimeToEdit != null) {
-            Date firstStopTime = this.firstStopTimeTextField.getText() == null || this.firstStopTimeTextField.getText().isEmpty() ?
-                null : StopTime.TIME_FORMAT.parse(this.firstStopTimeTextField.getText());
-            this.stopTimeToEdit.setFirstStopTime(firstStopTime);
-            if (!this.stopTimeTextField.getText().isEmpty())
-                this.stopTimeToEdit.setStopTime(Integer.parseInt(this.stopTimeTextField.getText()));
-            if (!this.stopIntervalTextField.getText().isEmpty())
-                this.stopTimeToEdit.setStopInterval(Integer.parseInt(this.stopIntervalTextField.getText()));
+            if (!this.timeFromFirstStopTextField.getText().isEmpty())
+                this.stopTimeToEdit.setTimeFromFirstStop(Integer.parseInt(this.timeFromFirstStopTextField.getText()));
             
             Set<ConstraintViolation<StopTime>> violations = ValidatorUtil.getValidator().validate(this.stopTimeToEdit, StopTime.Schedule.class);
             if (violations.isEmpty()) {

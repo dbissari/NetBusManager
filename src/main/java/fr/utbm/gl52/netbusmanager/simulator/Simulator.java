@@ -18,10 +18,10 @@ import javafx.util.Duration;
 public class Simulator {
     
     // number of seconds for buses moving next step
-    public static final Integer FRAME_REFRESH_SECONDS = 1;
+    private static final Integer FRAME_REFRESH_SECONDS = 1;
     
     // number of seconds matches one saved minute
-    public static final Integer FRAME_REFRESH_SCALE = 60;
+    private static final Integer FRAME_REFRESH_SCALE = 1;
     
     private final Timeline refreshTimeline;
     
@@ -43,5 +43,14 @@ public class Simulator {
     
     public void run() {
         this.refreshTimeline.play();
+    }
+    
+    /**
+     * From minutes it returns number of steps to create
+     * @param minutes the minutes
+     * @return the number of steps which correspond to the minutes passed
+     */
+    public static Integer getStepsCountFromMinutes(Integer minutes) {
+        return minutes * Simulator.FRAME_REFRESH_SCALE / Simulator.FRAME_REFRESH_SECONDS;
     }
 }

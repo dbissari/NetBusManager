@@ -54,19 +54,9 @@ public class StopTime implements Serializable {
     private Integer stopSequence;
 
     @Column(nullable = true)
-    @Temporal(TemporalType.TIME)
-    @NotNull(groups = {Schedule.class}, message = "L'heure du premier passage doit être renseignée")
-    private Date firstStopTime;
-
-    @Column(nullable = true)
-    @Min(value = 1, groups = {Schedule.class})
-    @NotNull(groups = {Schedule.class}, message = "Le temps d'arrêt doit être renseigné")
-    private Integer stopTime;
-
-    @Column(nullable = true)
-    @Min(value = 1, groups = {Schedule.class}, message = "L'intervalle entre les passages doit être renseigné")
-    @NotNull(groups = {Schedule.class})
-    private Integer stopInterval;
+    @NotNull(groups = {Schedule.class}, message = "Le temps depuis le premier arrêt doit être renseigné")
+    @Min(value = 0, groups = {Schedule.class}, message = "Le temps depuis le premier arrêt doit être supérieur ou égal à 0")
+    private Integer timeFromFirstStop;
 
     public StopTime() {
 
@@ -89,11 +79,11 @@ public class StopTime implements Serializable {
         Date startTime = this.trip.getStartTime() == null ? TIME_FORMAT.parse("00:00") : this.trip.getStartTime();
         Date endTime = this.trip.getEndTime() == null ? TIME_FORMAT.parse("23:59") : this.trip.getEndTime();
         
-        Date timeToAdd = this.firstStopTime;
+        Date timeToAdd = this.timeFromFirstStop == null ? null : DateUtils.addMinutes(startTime, this.timeFromFirstStop);
         
         while (timeToAdd != null && timeToAdd.getTime() >= startTime.getTime() && timeToAdd.getTime() <= endTime.getTime()) {
             dayStopTimes.add(timeToAdd);
-            Date newTime = DateUtils.addMinutes(timeToAdd, this.stopTime + this.stopInterval);
+            Date newTime = DateUtils.addMinutes(timeToAdd, this.trip.getFrequency());
             if (!DateUtils.isSameDay(timeToAdd, newTime))
                 timeToAdd = null;
             else
@@ -160,53 +150,23 @@ public class StopTime implements Serializable {
     }
 
     /**
-     * @return the firstStopTime
+     * @return the timeFromFirstStop
      */
-    public Date getFirstStopTime() {
-        return this.firstStopTime;
+    public Integer getTimeFromFirstStop() {
+        return this.timeFromFirstStop;
     }
 
     /**
-     * @param firstStopTime the firstStopTime to set
+     * @param timeFromFirstStop the timeFromFirstStop to set
      */
-    public void setFirstStopTime(Date firstStopTime) {
-        this.firstStopTime = firstStopTime;
-    }
-
-    /**
-     * @return the stopTime
-     */
-    public Integer getStopTime() {
-        return this.stopTime;
-    }
-
-    /**
-     * @param stopTime the stopTime to set
-     */
-    public void setStopTime(Integer stopTime) {
-        this.stopTime = stopTime;
-    }
-
-    /**
-     * @return the stopInterval
-     */
-    public Integer getStopInterval() {
-        return this.stopInterval;
-    }
-
-    /**
-     * @param stopInterval the stopInterval to set
-     */
-    public void setStopInterval(Integer stopInterval) {
-        this.stopInterval = stopInterval;
+    public void setTimeFromFirstStop(Integer timeFromFirstStop) {
+        this.timeFromFirstStop = timeFromFirstStop;
     }
 
     @Override
     public String toString() {
         return trip +
-                (firstStopTime == null ? "" : "; Premier passage : " + StopTime.TIME_FORMAT.format(firstStopTime)) +
-                (stopTime == null ? "" : "; Temps d'arrêt : " + stopTime) +
-                (stopInterval == null ? "" : "; Intervalle entre passages : " + stopInterval)
+                (timeFromFirstStop == null ? "" : "; Temps depuis le premier arrêt : " + timeFromFirstStop)
                 ;
     }
 
