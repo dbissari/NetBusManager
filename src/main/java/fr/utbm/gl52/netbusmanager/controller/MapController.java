@@ -108,6 +108,8 @@ public class MapController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        MainApp.getPrimaryStage().setMaximized(true);
 
         // Ask for FRAME_REFRESH_SCALE parameter
         do {
@@ -122,7 +124,6 @@ public class MapController implements Initializable {
 
             if (result.isPresent()) {
                 this.FRAME_REFRESH_SCALE = Integer.parseInt(result.get());
-                
             }
         } while (this.FRAME_REFRESH_SCALE == null);
         
