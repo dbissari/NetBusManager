@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.dao;
 
 import java.util.List;
@@ -11,7 +8,7 @@ import fr.utbm.gl52.netbusmanager.entity.Route;
 import fr.utbm.gl52.netbusmanager.entity.Trip;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 public class TripDao extends AbstractDao<Trip> {
@@ -20,7 +17,7 @@ public class TripDao extends AbstractDao<Trip> {
      * @return all saved trips for the route
      */
     public List<Trip> getAll() {
-        return entityManager.createQuery("select t from Trip t").getResultList();
+        return entityManager.createQuery("select t from Trip t order by t.route.identifier, t.direction").getResultList();
     }
 
     /**
@@ -28,7 +25,7 @@ public class TripDao extends AbstractDao<Trip> {
      * @return all saved trips for the route
      */
     public List<Trip> getAllByRoute(Route route) {
-        Query q = entityManager.createQuery("select t from Trip t where t.route = :route");
+        Query q = entityManager.createQuery("select t from Trip t where t.route = :route order by t.direction");
         q.setParameter("route", route);
 
         return q.getResultList();

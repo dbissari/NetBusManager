@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utbm.gl52.netbusmanager.controller;
 
 import fr.utbm.gl52.netbusmanager.FxmlResource;
@@ -10,8 +5,10 @@ import fr.utbm.gl52.netbusmanager.MainApp;
 import fr.utbm.gl52.netbusmanager.dao.StopDao;
 import fr.utbm.gl52.netbusmanager.entity.Stop;
 import fr.utbm.gl52.netbusmanager.util.ValidatorUtil;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.collections.FXCollections;
@@ -26,9 +23,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javax.validation.ConstraintViolation;
+import org.apache.commons.io.FileUtils;
 
 /**
+ * FXML Controller class
  *
  * @author bright
  */
@@ -156,6 +156,28 @@ public class StopEditorController implements Initializable {
         this.stopToEdit = (Stop) this.dataTableView.getSelectionModel().getSelectedItem();
         if (this.stopToEdit != null) {
             this.addStopButton.fire();
+        }
+    }
+
+    @FXML
+    private void loadStopsFile() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir le fichier d'arrêts à charger");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers d'arrêts", "*.stops.txt"));
+        File file = fileChooser.showOpenDialog(MainApp.getPrimaryStage());
+
+        if (file != null) {
+            try {
+                List<String> lines = FileUtils.readLines(file, "UTF-8");
+
+                for (String line : lines) {
+                    String[] lineData = line.split(",");
+                    this.stopDao.save(new Stop(lineData[0], Double.parseDouble(lineData[1]), Double.parseDouble(lineData[2])));
+                }
+                this.refreshDataTableView();
+            } catch (IOException ex) {
+                System.err.println("Could not load file. " + ex);
+            }
         }
     }
 }

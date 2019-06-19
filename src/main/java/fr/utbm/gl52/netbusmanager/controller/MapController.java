@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utbm.gl52.netbusmanager.controller;
 
 import java.net.URL;
@@ -39,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -47,6 +43,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
@@ -61,17 +58,30 @@ import javax.validation.ConstraintViolation;
  */
 public class MapController implements Initializable {
 
+    /**
+     * *********************** Simulator attributes ************************
+     */
+    // number of seconds for buses moving next step
+    private final Integer FRAME_REFRESH_SECONDS = 1;
+
+    // number of seconds matches one saved minute
+    private Integer FRAME_REFRESH_SCALE = null;
+    /**
+     * ********************* End Simulator attributes **********************
+     */
+
     private final StopDao stopDao = MainApp.getStopDao();
     private final TripDao tripDao = MainApp.getTripDao();
     private final StopTimeDao stopTimeDao = MainApp.getStopTimeDao();
 
     private Stop stopToCreate = null;
 
+    // Used to avoid markers and lines to be garbage collected
     private final HashMap<Marker, Stop> stopMarkers = new HashMap<>();
     private final List<CoordinateLine> tripLines = new ArrayList<>();
     private final List<Marker> busMarkers = new ArrayList<>();
 
-    private final Simulator simulator = new Simulator();
+    private Simulator simulator;
 
     private static final XYZParam xyzParam = new XYZParam()
             .withUrl("https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png")
@@ -96,11 +106,27 @@ public class MapController implements Initializable {
     @FXML
     private TextField stopLongitudeTextField;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Ask for FRAME_REFRESH_SCALE parameter
+        do {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Configuration de la simulation");
+            dialog.setHeaderText(dialog.getTitle());
+            dialog.setContentText("Nombre de secondes réelles pour une minute du système :");
+            Optional<String> result = dialog.showAndWait();
+
+            this.editorInformationLabel.setVisible(false);
+            this.editorInformationLabel.setText("");
+
+            if (result.isPresent()) {
+                this.FRAME_REFRESH_SCALE = Integer.parseInt(result.get());
+                
+            }
+        } while (this.FRAME_REFRESH_SCALE == null);
+        
+        this.simulator = new Simulator(this.FRAME_REFRESH_SECONDS, this.FRAME_REFRESH_SCALE);
 
         this.mapView.setAnimationDuration(500);
         this.mapView.setXYZParam(xyzParam);
@@ -123,8 +149,14 @@ public class MapController implements Initializable {
                 this.stopDao.getAll().forEach(stop -> {
                     stopsCoordinates.add(this.addStopToMap(stop));
                 });
-                Extent allStopsExtent = Extent.forCoordinates(stopsCoordinates);
-                this.mapView.setExtent(allStopsExtent);
+                if (!stopsCoordinates.isEmpty()) {
+                    Extent allStopsExtent = Extent.forCoordinates(stopsCoordinates);
+                    this.mapView.setExtent(allStopsExtent);
+                } else {
+                    // Gare de Belfort
+                    this.mapView.setCenter(new Coordinate(47.633566, 6.853806));
+                    mapView.setZoom(15);
+                }
 
                 // Add trip lines
                 trips.forEach(trip -> {
@@ -136,6 +168,8 @@ public class MapController implements Initializable {
                     // All the stop times of the trip
                     List<StopTime> stopTimes = this.stopTimeDao.getAllByTrip(trip);
 
+                    // Creates the trip stops coordinates list
+                    // Creates the trip steps for the simulator buses
                     for (int i = 0; i < stopTimes.size(); i++) {
                         StopTime currentStopTime = stopTimes.get(i);
                         Stop currentStop = currentStopTime.getStop();
@@ -154,17 +188,18 @@ public class MapController implements Initializable {
                                     CoordinatesUtil.splitLine(
                                             new Coordinate(currentStop.getLatitude(), currentStop.getLongitude()),
                                             new Coordinate(nextStop.getLatitude(), nextStop.getLongitude()),
-                                            Simulator.getStepsCountFromMinutes(nbMinutes)
+                                            this.simulator.getStepsCountFromMinutes(nbMinutes)
                                     )
                             );
                         }
                     }
-                    
+
                     try {
-                        // Create buses based on trip frequency
+                        // Create buses based on trip frequency and passing them the trip
                         int busCount = stopTimes.get(0).getDayStopTimes().size();
-                        for (int i = 0; i < busCount; i++) {
-                            Bus bus = new Bus(busTrip, Simulator.getStepsCountFromMinutes(i * trip.getFrequency()));
+                        System.out.println(busCount);
+                        for (int i = 0; i <= busCount; i++) {
+                            Bus bus = new Bus(busTrip, this.simulator.getStepsCountFromMinutes(i * trip.getFrequency()));
                             this.simulator.addBus(bus);
                             Marker busMarker = new Marker(getClass()
                                     .getResource("/img/bus-red-circle.png"), -25, -25)
@@ -179,6 +214,7 @@ public class MapController implements Initializable {
                         System.err.println(ex);
                     }
 
+                    // Draw the trip line with its stops coordinates list
                     CoordinateLine line = new CoordinateLine(lineCoordinates)
                             .setVisible(true)
                             .setColor(Color.valueOf(trip.getRoute().getColor()))
@@ -194,20 +230,21 @@ public class MapController implements Initializable {
         this.mapView.addEventHandler(MarkerEvent.MARKER_CLICKED, event -> {
             this.createStopForm.setVisible(false);
             Stop stop = this.stopMarkers.get(event.getMarker());
-            // if the marker match with a stop
+            // if the marker matches with a stop we compute its trips
             if (stop != null) {
                 TreeItem<String> stopRootNode = new TreeItem<>(stop.toString());
                 stopRootNode.setExpanded(true);
+                // for each trips of this stop we compute time table
                 this.stopTimeDao.getAllByStop(stop).forEach(stopTime -> {
                     TreeItem<String> tripNode = new TreeItem<>(stopTime.getTrip().toString());
                     try {
+                        // Add each time to the display component
                         stopTime.getDayStopTimes().forEach(time -> {
                             TreeItem<String> timeLeaf = new TreeItem<>(StopTime.TIME_FORMAT.format(time));
                             tripNode.getChildren().add(timeLeaf);
                         });
                     } catch (ParseException ex) {
-                        System.err.println("Time parsing failed." + ex);
-                        throw new ExceptionInInitializerError(ex);
+                        System.err.println("Time parsing failed. " + ex);
                     }
                     stopRootNode.getChildren().add(tripNode);
                 });
@@ -279,14 +316,13 @@ public class MapController implements Initializable {
     private void initOfflineCache() {
         final OfflineCache offlineCache = this.mapView.getOfflineCache();
         final String cacheDir = System.getProperty("java.io.tmpdir") + "/mapjfx-cache";
-        System.out.println("using dir for cache: " + cacheDir);
         try {
             Files.createDirectories(Paths.get(cacheDir));
             offlineCache.setCacheDirectory(cacheDir);
             offlineCache.setActive(true);
             offlineCache.setNoCacheFilters(Collections.singletonList(".*\\.sothawo\\.com/.*"));
         } catch (IOException e) {
-            System.err.println("could not activate offline cache" + e);
+            System.err.println("Could not activate offline cache. " + e);
         }
     }
 

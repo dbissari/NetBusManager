@@ -30,7 +30,9 @@ public class MainApp extends Application {
     }
 
     /**
-     * @param fileName the fxml file to load
+     * Switches to another window
+     * 
+     * @param fileName the window fxml file
      * @throws IOException
      */
     public static void switchScene(String fileName) throws IOException {
@@ -55,30 +57,22 @@ public class MainApp extends Application {
         });
     }
 
-    /**
-     * @return the stop dao
-     */
+    public static Stage getPrimaryStage() {
+        return stage;
+    }
+    
     public static StopDao getStopDao() {
         return stopDao;
     }
 
-    /**
-     * @return the route dao
-     */
     public static RouteDao getRouteDao() {
         return routeDao;
     }
 
-    /**
-     * @return the stop time dao
-     */
     public static StopTimeDao getStopTimeDao() {
         return stopTimeDao;
     }
 
-    /**
-     * @return the trip dao
-     */
     public static TripDao getTripDao() {
         return tripDao;
     }

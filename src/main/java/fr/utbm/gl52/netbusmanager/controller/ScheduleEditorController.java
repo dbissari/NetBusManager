@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utbm.gl52.netbusmanager.controller;
 
 import fr.utbm.gl52.netbusmanager.FxmlResource;
@@ -16,7 +11,6 @@ import fr.utbm.gl52.netbusmanager.util.ValidatorUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.collections.FXCollections;
@@ -28,6 +22,7 @@ import javafx.scene.control.TextField;
 import javax.validation.ConstraintViolation;
 
 /**
+ * FXML Controller class
  *
  * @author bright
  */

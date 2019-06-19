@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utbm.gl52.netbusmanager.controller;
 
 import fr.utbm.gl52.netbusmanager.FxmlResource;
@@ -43,10 +38,6 @@ public class RouteEditorController implements Initializable {
     @FXML
     private Label editorInformationLabel;
     
-
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.refreshListView();

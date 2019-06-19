@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.entity;
 
 import java.io.Serializable;
@@ -21,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 @Entity
@@ -30,7 +27,8 @@ public class Trip implements Serializable {
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Integer id;
 
     @ManyToOne

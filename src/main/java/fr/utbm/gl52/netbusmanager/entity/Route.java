@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.entity;
 
 import java.io.Serializable;
@@ -13,14 +10,15 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 @Entity
 public class Route implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Integer id;
 
     @Column(nullable = false, unique = true)

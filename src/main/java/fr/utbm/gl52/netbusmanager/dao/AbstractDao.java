@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.dao;
 
 import javax.persistence.EntityManager;
@@ -8,7 +5,7 @@ import javax.persistence.EntityManager;
 import fr.utbm.gl52.netbusmanager.util.EntityManagerUtil;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 abstract class AbstractDao<T> {
@@ -28,6 +25,9 @@ abstract class AbstractDao<T> {
         entityManager.getTransaction().commit();
     }
 
+    /**
+     * @param t the object to update, its id should be already in database
+     */
     public void update(T t) {
         entityManager.getTransaction().begin();
         entityManager.merge(t);

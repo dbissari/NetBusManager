@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.entity;
 
 import java.io.Serializable;
@@ -17,14 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang3.time.DateUtils;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 @Entity
@@ -36,7 +31,8 @@ public class StopTime implements Serializable {
     public static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm");
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Integer id;
 
     @ManyToOne
@@ -71,6 +67,8 @@ public class StopTime implements Serializable {
         this.trip = trip;
         this.stop = stop;
         this.stopSequence = stopSequence;
+        // Default time from first stop
+        this.timeFromFirstStop = stopSequence * 2;
     }
     
     public List<Date> getDayStopTimes() throws ParseException {

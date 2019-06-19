@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.dao;
 
 import java.util.List;
@@ -8,7 +5,7 @@ import java.util.List;
 import fr.utbm.gl52.netbusmanager.entity.Route;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 public class RouteDao extends AbstractDao<Route> {
@@ -17,7 +14,7 @@ public class RouteDao extends AbstractDao<Route> {
      * @return all saved routes
      */
     public List<Route> getAll() {
-        return entityManager.createQuery("select r from Route r").getResultList();
+        return entityManager.createQuery("select r from Route r order by r.identifier").getResultList();
     }
 
     /**

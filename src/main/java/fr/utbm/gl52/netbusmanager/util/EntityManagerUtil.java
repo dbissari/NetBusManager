@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.util;
 
 import javax.persistence.EntityManager;
@@ -8,7 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 /**
- * @author dbissari
+ * @author bright
  *
  */
 public class EntityManagerUtil {
@@ -24,9 +21,6 @@ public class EntityManagerUtil {
         }
     }
 
-    /**
-     * @return an entity manager
-     */
     public static EntityManager getEntityManager() {
         return entityManagerFactory.createEntityManager();
     }

@@ -7,9 +7,9 @@
     <class>fr.utbm.gl52.netbusmanager.entity.Stop</class>
     <class>fr.utbm.gl52.netbusmanager.entity.StopTime</class>
     <properties>
-        <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/nbm"/>
+        <property name="javax.persistence.jdbc.url" value="jdbc:derby:nbm;create=true"/>
         <property name="javax.persistence.jdbc.user" value="nbm"/>
-        <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+        <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
         <property name="javax.persistence.jdbc.password" value="nbm"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fr.utbm.gl52.netbusmanager.simulator;
 
 import java.util.ArrayList;
@@ -18,19 +13,21 @@ import javafx.util.Duration;
 public class Simulator {
     
     // number of seconds for buses moving next step
-    private static final Integer FRAME_REFRESH_SECONDS = 1;
+    private final Integer frameRefreshSeconds;
     
     // number of seconds matches one saved minute
-    private static final Integer FRAME_REFRESH_SCALE = 1;
+    private final Integer frameRefreshScale;
     
     private final Timeline refreshTimeline;
     
     private List<Bus> buses = new ArrayList<>();
 
-    public Simulator() {
+    public Simulator(Integer frameRefreshSeconds, Integer frameRefreshScale) {
+        this.frameRefreshSeconds = frameRefreshSeconds;
+        this.frameRefreshScale = frameRefreshScale;
         this.refreshTimeline = new Timeline();
         this.refreshTimeline.setCycleCount(Timeline.INDEFINITE);
-        this.refreshTimeline.getKeyFrames().add(new KeyFrame(Duration.seconds(FRAME_REFRESH_SECONDS), (ActionEvent) -> {
+        this.refreshTimeline.getKeyFrames().add(new KeyFrame(Duration.seconds(frameRefreshSeconds), (ActionEvent) -> {
             this.buses.forEach(bus -> {
                 bus.moveToNextStep();
             });
@@ -50,7 +47,7 @@ public class Simulator {
      * @param minutes the minutes
      * @return the number of steps which correspond to the minutes passed
      */
-    public static Integer getStepsCountFromMinutes(Integer minutes) {
-        return minutes * Simulator.FRAME_REFRESH_SCALE / Simulator.FRAME_REFRESH_SECONDS;
+    public Integer getStepsCountFromMinutes(Integer minutes) {
+        return minutes * this.frameRefreshScale / this.frameRefreshSeconds;
     }
 }

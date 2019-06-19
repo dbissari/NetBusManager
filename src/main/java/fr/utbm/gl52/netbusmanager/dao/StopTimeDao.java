@@ -1,6 +1,3 @@
-/**
- *
- */
 package fr.utbm.gl52.netbusmanager.dao;
 
 import java.util.List;
@@ -44,7 +41,7 @@ public class StopTimeDao extends AbstractDao<StopTime> {
      * @return all saved stop time for the stop
      */
     public List<StopTime> getAllByStop(Stop stop) {
-        Query q = entityManager.createQuery("select st from StopTime st where st.stop = :stop");
+        Query q = entityManager.createQuery("select st from StopTime st where st.stop = :stop order by st.trip.route.identifier, st.trip.direction");
         q.setParameter("stop", stop);
 
         return q.getResultList();

@@ -16,13 +16,13 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
+ * FXML Controller class
  *
  * @author bright
  */
@@ -32,8 +32,6 @@ public class TripListController implements Initializable {
 
     @FXML
     private TableView dataTableView;
-    @FXML
-    private SplitPane root;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

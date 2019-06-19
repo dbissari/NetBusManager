@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javafx.collections.FXCollections;
@@ -28,16 +27,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.paint.Color;
 import javax.validation.ConstraintViolation;
 
 /**
+ * FXML Controller class
  *
  * @author bright
  */
@@ -64,8 +61,6 @@ public class TripEditorController implements Initializable {
     private Label editorInformationLabel;
     @FXML
     private Button existingLinesButton;
-    @FXML
-    private ColorPicker tripColorPicker;
     @FXML
     private TextField frequencyTextField;
 

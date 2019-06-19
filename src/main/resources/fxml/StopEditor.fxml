@@ -20,6 +20,7 @@
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="15.0">
                     <children>
                         <Button fx:id="addStopButton" mnemonicParsing="false" onAction="#toggleStopEditorForm" text="Ajouter un arrêt" />
+                        <Button mnemonicParsing="false" onAction="#loadStopsFile" text="Charger un fichier" />
                         <Button mnemonicParsing="false" onAction="#goBackToMainScreen" text="Menu principal" />
                     </children>
                 </VBox>

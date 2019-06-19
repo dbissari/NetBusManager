@@ -10,7 +10,7 @@
         <Button onAction="#stopEditorShow" text="Gérer les arrêts" />
         <Button onAction="#routeEditorShow" text="Gérer les lignes" />
         <Button onAction="#tripEditorShow" text="Créer un itinéraire" />
-        <Button onAction="#scheduleEditorShow" text="Gérer les tables de marche" />
+        <Button onAction="#scheduleEditorShow" text="Gérer les tableaux de marche" />
     </VBox>
     
 </VBox>
